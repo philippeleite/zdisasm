@@ -17,8 +17,8 @@ func TestDisasm(t *testing.T) {
 		{name: "BRC", input: "A7F4FFEC", want: "BRC   15,-20"},
 		// Format RIL3 (32-bit immediate via unsigned-to-signed cast)
 		{name: "BRASL", input: "C0E5FFFFFFEC", want: "BRASL R14,-20"},
-		// Format RXY (20-bit displacement)
-		{name: "LG", input: "E31F10008004", want: "LG    R1,8(R15,R1)"},
+		// Format RXY (20-bit displacement): E3=op1, 1=R1, F=X2(R15), 1=B2(R1), 008=DL2, 00=DH2, 04=op2
+		{name: "LG", input: "E31F10080004", want: "LG    R1,8(R15,R1)"},
 		// Error: non-hex input
 		{name: "non-hex", input: "ZZZZ", wantErr: true},
 		// Error: wrong length for opcode class

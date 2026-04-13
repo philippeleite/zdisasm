@@ -42,9 +42,9 @@ func signExt32(v uint64) int64 {
 }
 
 // disp20 decodes a 20-bit RSY/RXY/SIY displacement from the hex string.
-// High byte is at s[9:11], low 12 bits at s[6:9].
+// High byte is at s[8:10], low 12 bits at s[5:8].
 func disp20(s string) int64 {
-	raw, _ := strconv.ParseInt(s[9:11]+s[6:9], 16, 64)
+	raw, _ := strconv.ParseInt(s[8:10]+s[5:8], 16, 64)
 	return signExt20(raw)
 }
 
@@ -257,7 +257,7 @@ func formatRXY(s string) string {
 	r1, _ := strconv.ParseUint(s[2:3], 16, 8)
 	x2, _ := strconv.ParseUint(s[3:4], 16, 8)
 	b2, _ := strconv.ParseUint(s[4:5], 16, 8)
-	raw, _ := strconv.ParseInt(s[9:11]+s[6:9], 16, 64)
+	raw, _ := strconv.ParseInt(s[8:10]+s[5:8], 16, 64)
 	return fmt.Sprintf("R%d,%d(R%d,R%d)", r1, signExt20(raw), x2, b2)
 }
 
@@ -277,7 +277,7 @@ func formatSI(s string) string {
 func formatSIY(s string) string {
 	i2, _ := strconv.ParseUint(s[2:4], 16, 8)
 	b1, _ := strconv.ParseUint(s[4:5], 16, 8)
-	raw, _ := strconv.ParseInt(s[9:11]+s[6:9], 16, 64)
+	raw, _ := strconv.ParseInt(s[8:10]+s[5:8], 16, 64)
 	return fmt.Sprintf("%d(R%d),%d", signExt20(raw), b1, i2)
 }
 
