@@ -23,8 +23,8 @@ func TestDisasm(t *testing.T) {
 		{name: "non-hex", input: "ZZZZ", wantErr: true},
 		// Error: wrong length for opcode class
 		{name: "bad-length", input: "18", wantErr: true},
-		// Error: opcode not in table
-		{name: "unknown-opcode", input: "FFFF", wantErr: true},
+		// Error: opcode not in table (valid length 6-byte F-prefix, unknown opcode)
+		{name: "unknown-opcode", input: "FFFFFFFFFFFF", wantErr: true},
 	}
 
 	for _, tc := range tests {

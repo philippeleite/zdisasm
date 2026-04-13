@@ -257,8 +257,7 @@ func formatRXY(s string) string {
 	r1, _ := strconv.ParseUint(s[2:3], 16, 8)
 	x2, _ := strconv.ParseUint(s[3:4], 16, 8)
 	b2, _ := strconv.ParseUint(s[4:5], 16, 8)
-	raw, _ := strconv.ParseInt(s[8:10]+s[5:8], 16, 64)
-	return fmt.Sprintf("R%d,%d(R%d,R%d)", r1, signExt20(raw), x2, b2)
+	return fmt.Sprintf("R%d,%d(R%d,R%d)", r1, disp20(s), x2, b2)
 }
 
 func formatS(s string) string {
@@ -277,8 +276,7 @@ func formatSI(s string) string {
 func formatSIY(s string) string {
 	i2, _ := strconv.ParseUint(s[2:4], 16, 8)
 	b1, _ := strconv.ParseUint(s[4:5], 16, 8)
-	raw, _ := strconv.ParseInt(s[8:10]+s[5:8], 16, 64)
-	return fmt.Sprintf("%d(R%d),%d", signExt20(raw), b1, i2)
+	return fmt.Sprintf("%d(R%d),%d", disp20(s), b1, i2)
 }
 
 func formatSS1(s string) string {
@@ -645,7 +643,7 @@ var itable = map[int]inst{
 	0xb31c: {"MDBR  ", formatRRE1},
 	0xb31d: {"DDBR  ", formatRRE1},
 	0xb31e: {"MADBR ", formatRRF5},
-	0xb31f: {"LPEBR ", formatRRF5},
+	0xb31f: {"MSDBR ", formatRRF5},
 	0xb324: {"LDER  ", formatRRE1},
 	0xb325: {"LXDR  ", formatRRE1},
 	0xb326: {"LXER  ", formatRRE1},
@@ -1074,6 +1072,9 @@ func buildKey(s string, ilen int) int {
 func disasm(s string) (string, error) {
 	if !isHex(s) {
 		return "", fmt.Errorf("only hexadecimal digits permitted")
+	}
+	if len(s)%2 != 0 {
+		return "", fmt.Errorf("hex string must have even length")
 	}
 
 	ilen := len(s) / 2
