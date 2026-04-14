@@ -1,6 +1,10 @@
-package main
+package zdisasm_test
 
-import "testing"
+import (
+	"testing"
+
+	"zdisasm"
+)
 
 func TestDisasm(t *testing.T) {
 	tests := []struct {
@@ -29,19 +33,19 @@ func TestDisasm(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got, err := disasm(tc.input)
+			got, err := zdisasm.Disasm(tc.input)
 			if tc.wantErr {
 				if err == nil {
-					t.Errorf("disasm(%q) expected error, got %q", tc.input, got)
+					t.Errorf("Disasm(%q) expected error, got %q", tc.input, got)
 				}
 				return
 			}
 			if err != nil {
-				t.Errorf("disasm(%q) unexpected error: %v", tc.input, err)
+				t.Errorf("Disasm(%q) unexpected error: %v", tc.input, err)
 				return
 			}
 			if got != tc.want {
-				t.Errorf("disasm(%q)\n  got:  %q\n  want: %q", tc.input, got, tc.want)
+				t.Errorf("Disasm(%q)\n  got:  %q\n  want: %q", tc.input, got, tc.want)
 			}
 		})
 	}

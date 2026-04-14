@@ -1,8 +1,7 @@
-package main
+package zdisasm
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 )
 
@@ -1123,7 +1122,7 @@ func buildKey(s string, ilen int) int {
 
 // disasm decodes a z/Architecture instruction given as a hex string.
 // Returns "MNEM  operands" or an error.
-func disasm(s string) (string, error) {
+func Disasm(s string) (string, error) {
 	if !isHex(s) {
 		return "", fmt.Errorf("only hexadecimal digits permitted")
 	}
@@ -1154,23 +1153,4 @@ func disasm(s string) (string, error) {
 		return entry.mnem, nil
 	}
 	return entry.mnem + operands, nil
-}
-
-// ── main ──────────────────────────────────────────────────────────────────────
-
-func main() {
-	if len(os.Args) == 1 {
-		fmt.Fprintln(os.Stderr, "usage: zdisasm <hex-instruction>")
-		os.Exit(1)
-	}
-	if len(os.Args) > 2 {
-		fmt.Fprintln(os.Stderr, "too many arguments")
-		os.Exit(1)
-	}
-	result, err := disasm(os.Args[1])
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
-	fmt.Println(result)
 }
