@@ -57,6 +57,12 @@ func formatI(s string) string {
 	return fmt.Sprintf("%d", i)
 }
 
+func formatIE(s string) string {
+	i1, _ := strconv.ParseUint(s[6:7], 16, 8)
+	i2, _ := strconv.ParseUint(s[7:8], 16, 8)
+	return fmt.Sprintf("%d,%d", i1, i2)
+}
+
 func formatRI1(s string) string {
 	r1, _ := strconv.ParseUint(s[2:3], 16, 8)
 	i2, _ := strconv.ParseUint(s[4:8], 16, 16)
@@ -174,6 +180,21 @@ func formatRRF5(s string) string {
 	r3, _ := strconv.ParseUint(s[6:7], 16, 8)
 	r2, _ := strconv.ParseUint(s[7:8], 16, 8)
 	return fmt.Sprintf("R%d,R%d,R%d", r1, r3, r2)
+}
+
+func formatRRF6(s string) string {
+	m3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	m4, _ := strconv.ParseUint(s[5:6], 16, 8)
+	r1, _ := strconv.ParseUint(s[6:7], 16, 8)
+	r2, _ := strconv.ParseUint(s[7:8], 16, 8)
+	return fmt.Sprintf("R%d,%d,R%d,%d", r1, m3, r2, m4)
+}
+
+func formatRRF7(s string) string {
+	r3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	r1, _ := strconv.ParseUint(s[6:7], 16, 8)
+	r2, _ := strconv.ParseUint(s[7:8], 16, 8)
+	return fmt.Sprintf("R%d,R%d,R%d", r1, r2, r3)
 }
 
 func formatRS1(s string) string {
@@ -348,6 +369,7 @@ var itable = map[int]inst{
 	0x0102: {"UPT   ", formatE},
 	0x0104: {"PTFF  ", formatE},
 	0x0107: {"SCKPF ", formatE},
+	0x010a: {"PFPO  ", formatE},
 	0x010b: {"TAM   ", formatE},
 	0x010c: {"SAM24 ", formatE},
 	0x010d: {"SAM31 ", formatE},
@@ -458,7 +480,7 @@ var itable = map[int]inst{
 	0x7900: {"CE    ", formatRX1},
 	0x7a00: {"AE    ", formatRX1},
 	0x7b00: {"SE    ", formatRX1},
-	0x7c00: {"ME    ", formatRX1},
+	0x7c00: {"MDE   ", formatRX1},
 	0x7d00: {"DE    ", formatRX1},
 	0x7e00: {"AU    ", formatRX1},
 	0x7f00: {"SU    ", formatRX1},
@@ -505,8 +527,8 @@ var itable = map[int]inst{
 	0xa5d0: {"LLIHL ", formatRI1},
 	0xa5e0: {"LLILH ", formatRI1},
 	0xa5f0: {"LLILL ", formatRI1},
-	0xa700: {"TMH   ", formatRI1},
-	0xa710: {"TML   ", formatRI1},
+	0xa700: {"TMLH  ", formatRI1},
+	0xa710: {"TMLL  ", formatRI1},
 	0xa720: {"TMHH  ", formatRI1},
 	0xa730: {"TMHL  ", formatRI1},
 	0xa740: {"BRC   ", formatRI4},
@@ -528,6 +550,8 @@ var itable = map[int]inst{
 	0xae00: {"SIGP  ", formatRS1},
 	0xaf00: {"MC    ", formatSI},
 	0xb100: {"LRA   ", formatRX1},
+	0xb200: {"LBEAR ", formatS},
+	0xb201: {"STBEAR ", formatS},
 	0xb202: {"STIDP ", formatS},
 	0xb204: {"SCK   ", formatS},
 	0xb205: {"STCK  ", formatS},
@@ -602,6 +626,7 @@ var itable = map[int]inst{
 	0xb279: {"SACF  ", formatS},
 	0xb27c: {"STCKF ", formatS},
 	0xb27d: {"STSI  ", formatS},
+	0xb28f: {"QPACI ", formatS},
 	0xb299: {"SRNM  ", formatS},
 	0xb29c: {"STFPC ", formatS},
 	0xb29d: {"LFPC  ", formatS},
@@ -611,6 +636,14 @@ var itable = map[int]inst{
 	0xb2b0: {"STFLE ", formatS},
 	0xb2b1: {"STFL  ", formatS},
 	0xb2b2: {"LPSWE ", formatS},
+	0xb2b8: {"SRNMB ", formatS},
+	0xb2b9: {"SRNMT ", formatS},
+	0xb2bd: {"LFAS  ", formatS},
+	0xb2e8: {"PPA   ", formatRRF4},
+	0xb2ec: {"ETND  ", formatRRE2},
+	0xb2f8: {"TEND  ", formatS},
+	0xb2fa: {"NIAI  ", formatIE},
+	0xb2fc: {"TABORT ", formatS},
 	0xb2ff: {"TRAP4 ", formatS},
 	0xb300: {"LPEBR ", formatRRE1},
 	0xb301: {"LNEBR ", formatRRE1},
@@ -689,37 +722,58 @@ var itable = map[int]inst{
 	0xb366: {"LEXR  ", formatRRE1},
 	0xb367: {"FIXR  ", formatRRE1},
 	0xb369: {"CXR   ", formatRRE1},
+	0xb370: {"LPDFR ", formatRRE1},
+	0xb371: {"LNDFR ", formatRRE1},
+	0xb372: {"CPSDR ", formatRRF3},
+	0xb373: {"LCDFR ", formatRRE1},
 	0xb374: {"LZER  ", formatRRE2},
 	0xb375: {"LZDR  ", formatRRE2},
 	0xb376: {"LZXR  ", formatRRE2},
 	0xb377: {"FIER  ", formatRRE1},
 	0xb37f: {"FIDR  ", formatRRE1},
 	0xb384: {"SFPC  ", formatRRE2},
+	0xb385: {"SFASR ", formatRRE2},
 	0xb38c: {"EFPC  ", formatRRE2},
+	0xb390: {"CELFBR ", formatRRF6},
+	0xb391: {"CDLFBR ", formatRRF6},
+	0xb392: {"CXLFBR ", formatRRF6},
 	0xb394: {"CEFBR ", formatRRE1},
 	0xb395: {"CDFBR ", formatRRE1},
 	0xb396: {"CXFBR ", formatRRE1},
 	0xb398: {"CFEBR ", formatRRF2},
 	0xb399: {"CFDBR ", formatRRF2},
 	0xb39a: {"CFXBR ", formatRRF2},
+	0xb39c: {"CLFEBR ", formatRRF6},
+	0xb39d: {"CLFDBR ", formatRRF6},
+	0xb39e: {"CLFXBR ", formatRRF6},
+	0xb3a0: {"CELGBR ", formatRRF6},
+	0xb3a1: {"CDLGBR ", formatRRF6},
+	0xb3a2: {"CXLGBR ", formatRRF6},
 	0xb3a4: {"CEGBR ", formatRRE1},
 	0xb3a5: {"CDGBR ", formatRRE1},
 	0xb3a6: {"CXGBR ", formatRRE1},
 	0xb3a8: {"CGEBR ", formatRRF2},
 	0xb3a9: {"CGDBR ", formatRRF2},
 	0xb3aa: {"CGXBR ", formatRRF2},
+	0xb3ac: {"CLGEBR ", formatRRF6},
+	0xb3ad: {"CLGDBR ", formatRRF6},
+	0xb3ae: {"CLGXBR ", formatRRF6},
 	0xb3b4: {"CEFR  ", formatRRE1},
 	0xb3b5: {"CDFR  ", formatRRE1},
 	0xb3b6: {"CXFR  ", formatRRE1},
 	0xb3b8: {"CFER  ", formatRRF2},
 	0xb3b9: {"CFDR  ", formatRRF2},
 	0xb3ba: {"CFXR  ", formatRRF2},
+	0xb3c1: {"LDGR  ", formatRRE1},
 	0xb3c4: {"CEGR  ", formatRRE1},
 	0xb3c5: {"CDGR  ", formatRRE1},
 	0xb3c6: {"CXGR  ", formatRRE1},
 	0xb3c8: {"CGER  ", formatRRF2},
 	0xb3c9: {"CGDR  ", formatRRF2},
 	0xb3ca: {"CGXR  ", formatRRF2},
+	0xb3cd: {"LGDR  ", formatRRE1},
+	0xb3d0: {"MDTR  ", formatRRF7},
+	0xb3d8: {"MXTR  ", formatRRF7},
 	0xb600: {"STCTL ", formatRS1},
 	0xb700: {"LCTL  ", formatRS1},
 	0xb900: {"LPGR  ", formatRRE1},
