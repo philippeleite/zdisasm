@@ -8,11 +8,7 @@ Takes a hexadecimal string representing a z/Architecture instruction and decodes
 
 ### CLI
 
-```sh
-go install zdisasm/cmd/zdisasm@latest
-```
-
-Or build from source:
+Build from source:
 
 ```sh
 git clone https://github.com/philippeleite/zdisasm.git
