@@ -3,7 +3,7 @@ package zdisasm_test
 import (
 	"testing"
 
-	"zdisasm"
+	"github.com/philippeleite/zdisasm"
 )
 
 func TestDisasm(t *testing.T) {
