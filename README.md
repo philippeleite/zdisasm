@@ -19,7 +19,7 @@ go build ./cmd/zdisasm
 ### Library
 
 ```sh
-go get zdisasm
+go get github.com/philippeleite/zdisasm
 ```
 
 ## CLI Usage
