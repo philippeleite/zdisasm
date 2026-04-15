@@ -59,8 +59,11 @@ Invalid input returns an error and exits with code 1:
 $ zdisasm ZZZZ
 only hexadecimal digits permitted
 
-$ zdisasm 18
-unknown opcode: 18
+$ zdisasm 0800
+instruction not found
+
+$ zdisasm 03
+invalid instruction length
 ```
 
 ## Library Usage
@@ -80,7 +83,7 @@ import (
 	"fmt"
 	"log"
 
-	"zdisasm"
+	"github.com/philippeleite/zdisasm"
 )
 
 func main() {
@@ -95,7 +98,7 @@ func main() {
 ## Running Tests
 
 ```sh
-go test ./...
+go test
 ```
 
 ## License
