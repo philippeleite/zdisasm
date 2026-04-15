@@ -541,14 +541,14 @@ func formatSSG(s string) string {
 }
 
 func formatVRIa(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
 	i2, _ := strconv.ParseUint(s[4:8], 16, 16)
 	m3, _ := strconv.ParseUint(s[8:9], 16, 8)
 	return fmt.Sprintf("V%d,%d,%d", v1, i2, m3)
 }
 
 func formatVRIb(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
 	i2, _ := strconv.ParseUint(s[4:6], 16, 16)
 	i3, _ := strconv.ParseUint(s[6:8], 16, 16)
 	m4, _ := strconv.ParseUint(s[8:9], 16, 8)
@@ -556,25 +556,25 @@ func formatVRIb(s string) string {
 }
 
 func formatVRIc(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v3, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	i2, _ := strconv.ParseUint(s[4:8], 16, 16)
 	m4, _ := strconv.ParseUint(s[8:9], 16, 8)
 	return fmt.Sprintf("V%d,V%d,%d,%d", v1, v3, i2, m4)
 }
 
 func formatVRId(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
 	i4, _ := strconv.ParseUint(s[6:8], 16, 16)
 	m5, _ := strconv.ParseUint(s[8:9], 16, 8)
 	return fmt.Sprintf("V%d,V%d,V%d,%d,%d", v1, v2, v3, i4, m5)
 }
 
 func formatVRIe(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	i3, _ := strconv.ParseUint(s[4:7], 16, 16)
 	m5, _ := strconv.ParseUint(s[7:8], 16, 8)
 	m4, _ := strconv.ParseUint(s[8:9], 16, 8)
@@ -582,17 +582,17 @@ func formatVRIe(s string) string {
 }
 
 func formatVRIf(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
 	m5, _ := strconv.ParseUint(s[6:7], 16, 8)
 	i4, _ := strconv.ParseUint(s[7:9], 16, 16)
 	return fmt.Sprintf("V%d,V%d,V%d,%d,%d", v1, v2, v3, i4, m5)
 }
 
 func formatVRIg(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	i4, _ := strconv.ParseUint(s[4:6], 16, 16)
 	m5, _ := strconv.ParseUint(s[6:7], 16, 8)
 	i3, _ := strconv.ParseUint(s[7:9], 16, 16)
@@ -600,14 +600,14 @@ func formatVRIg(s string) string {
 }
 
 func formatVRIh(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
 	i2, _ := strconv.ParseUint(s[4:8], 16, 16)
 	i3, _ := strconv.ParseUint(s[8:9], 16, 8)
 	return fmt.Sprintf("V%d,%d,%d", v1, i2, i3)
 }
 
 func formatVRIi(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
 	r2, _ := strconv.ParseUint(s[3:4], 16, 8)
 	m4, _ := strconv.ParseUint(s[6:7], 16, 8)
 	i3, _ := strconv.ParseUint(s[7:9], 16, 16)
@@ -615,117 +615,117 @@ func formatVRIi(s string) string {
 }
 
 func formatVRIj(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	m4, _ := strconv.ParseUint(s[6:7], 16, 8)
 	i3, _ := strconv.ParseUint(s[7:9], 16, 16)
 	return fmt.Sprintf("V%d,V%d,%d,%d", v1, v2, i3, m4)
 }
 
 func formatVRIk(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
 	i5, _ := strconv.ParseUint(s[6:8], 16, 16)
-	v4, _ := strconv.ParseUint(s[8:9], 16, 8)
+	v4, _ := strconv.ParseUint(s[9:10]+s[8:9], 16, 16)
 	return fmt.Sprintf("V%d,V%d,V%d,V%d,%d", v1, v2, v3, v4, i5)
 }
 
 func formatVRIl(s string) string {
-	v1, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v2, _ := strconv.ParseUint(s[4:5], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
 	i3, _ := strconv.ParseUint(s[5:9], 16, 16)
 	return fmt.Sprintf("V%d,V%d,%d", v1, v2, i3)
 }
 
 func formatVRRa(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	m4, _ := strconv.ParseUint(s[6:7], 16, 8)
 	m3, _ := strconv.ParseUint(s[7:8], 16, 8)
 	return fmt.Sprintf("V%d,V%d,%d,%d", v1, v2, m3, m4)
 }
 
 func formatVRRb(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
 	m5, _ := strconv.ParseUint(s[6:7], 16, 8)
 	m4, _ := strconv.ParseUint(s[8:9], 16, 8)
 	return fmt.Sprintf("V%d,V%d,V%d,%d,%d", v1, v2, v3, m4, m5)
 }
 
 func formatVRRc(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
 	m5, _ := strconv.ParseUint(s[7:8], 16, 8)
 	m4, _ := strconv.ParseUint(s[8:9], 16, 8)
 	return fmt.Sprintf("V%d,V%d,V%d,%d,%d", v1, v2, v3, m4, m5)
 }
 
 func formatVRRd(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
 	m5, _ := strconv.ParseUint(s[5:6], 16, 8)
-	v4, _ := strconv.ParseUint(s[8:9], 16, 8)
+	v4, _ := strconv.ParseUint(s[9:10]+s[8:9], 16, 16)
 	return fmt.Sprintf("V%d,V%d,V%d,V%d,%d", v1, v2, v3, v4, m5)
 }
 
 func formatVRRe(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v3, _ := strconv.ParseUint(s[4:5], 16, 8)
-	v4, _ := strconv.ParseUint(s[8:9], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
+	v4, _ := strconv.ParseUint(s[9:10]+s[8:9], 16, 16)
 	return fmt.Sprintf("V%d,V%d,V%d,V%d", v1, v2, v3, v4)
 }
 
 func formatVRRf(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
 	r2, _ := strconv.ParseUint(s[3:4], 16, 8)
 	r3, _ := strconv.ParseUint(s[4:5], 16, 8)
 	return fmt.Sprintf("V%d,R%d,R%d", v1, r2, r3)
 }
 
 func formatVRRg(s string) string {
-	v1, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	i2, _ := strconv.ParseUint(s[5:9], 16, 16)
 	return fmt.Sprintf("V%d,%d", v1, i2)
 }
 
 func formatVRRh(s string) string {
-	v1, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v2, _ := strconv.ParseUint(s[4:5], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
 	m3, _ := strconv.ParseUint(s[6:7], 16, 8)
 	return fmt.Sprintf("V%d,V%d,%d", v1, v2, m3)
 }
 
 func formatVRRi(s string) string {
 	r1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	m3, _ := strconv.ParseUint(s[6:7], 16, 8)
 	m4, _ := strconv.ParseUint(s[7:8], 16, 8)
 	return fmt.Sprintf("R%d,V%d,%d,%d", r1, v2, m3, m4)
 }
 
 func formatVRRj(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
-	v3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[4:5], 16, 16)
 	m4, _ := strconv.ParseUint(s[6:7], 16, 8)
 	return fmt.Sprintf("V%d,V%d,V%d,%d", v1, v2, v3, m4)
 }
 
 func formatVRRk(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	m3, _ := strconv.ParseUint(s[6:7], 16, 8)
 	return fmt.Sprintf("V%d,V%d,%d", v1, v2, m3)
 }
 
 func formatVRX(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
 	x2, _ := strconv.ParseUint(s[3:4], 16, 8)
 	b2, _ := strconv.ParseUint(s[4:5], 16, 8)
 	d2, _ := strconv.ParseUint(s[5:8], 16, 16)
@@ -737,13 +737,13 @@ func formatVRS(s string) string {
 	r3, _ := strconv.ParseUint(s[3:4], 16, 8)
 	b2, _ := strconv.ParseUint(s[4:5], 16, 8)
 	d2, _ := strconv.ParseUint(s[5:8], 16, 16)
-	v1, _ := strconv.ParseUint(s[8:9], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[8:9], 16, 16)
 	return fmt.Sprintf("V%d,R%d,%d(R%d)", v1, r3, d2, b2)
 }
 
 func formatVRSa(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v3, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v3, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	b2, _ := strconv.ParseUint(s[4:5], 16, 8)
 	d2, _ := strconv.ParseUint(s[5:8], 16, 16)
 	m4, _ := strconv.ParseUint(s[8:9], 16, 8)
@@ -751,7 +751,7 @@ func formatVRSa(s string) string {
 }
 
 func formatVRSb(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
 	r3, _ := strconv.ParseUint(s[3:4], 16, 8)
 	b2, _ := strconv.ParseUint(s[4:5], 16, 8)
 	d2, _ := strconv.ParseUint(s[5:8], 16, 16)
@@ -761,7 +761,7 @@ func formatVRSb(s string) string {
 
 func formatVRSc(s string) string {
 	r1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v3, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v3, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	b2, _ := strconv.ParseUint(s[4:5], 16, 8)
 	d2, _ := strconv.ParseUint(s[5:8], 16, 16)
 	m4, _ := strconv.ParseUint(s[8:9], 16, 8)
@@ -769,8 +769,8 @@ func formatVRSc(s string) string {
 }
 
 func formatVRV(s string) string {
-	v1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	v2, _ := strconv.ParseUint(s[3:4], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[2:3], 16, 16)
+	v2, _ := strconv.ParseUint(s[9:10]+s[3:4], 16, 16)
 	b2, _ := strconv.ParseUint(s[4:5], 16, 8)
 	d2, _ := strconv.ParseUint(s[5:8], 16, 16)
 	m3, _ := strconv.ParseUint(s[8:9], 16, 8)
@@ -781,7 +781,7 @@ func formatVSI(s string) string {
 	i3, _ := strconv.ParseUint(s[2:4], 16, 16)
 	b2, _ := strconv.ParseUint(s[4:5], 16, 8)
 	d2, _ := strconv.ParseUint(s[5:8], 16, 16)
-	v1, _ := strconv.ParseUint(s[8:9], 16, 8)
+	v1, _ := strconv.ParseUint(s[9:10]+s[8:9], 16, 16)
 	return fmt.Sprintf("V%d,%d(R%d),%d", v1, d2, b2, i3)
 }
 
