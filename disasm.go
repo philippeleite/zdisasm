@@ -19,6 +19,14 @@ func isHex(s string) bool {
 	return true
 }
 
+// signExt12 sign-extends a value from 12 bits to int64.
+func signExt12(v int64) int64 {
+	if (v>>11)&1 == 1 {
+		return v | (-1 << 12)
+	}
+	return v
+}
+
 // signExt16 sign-extends a value from 16 bits to int64.
 func signExt16(v int64) int64 {
 	if (v>>15)&1 == 1 {
@@ -31,6 +39,14 @@ func signExt16(v int64) int64 {
 func signExt20(v int64) int64 {
 	if (v>>19)&1 == 1 {
 		return v | (-1 << 20)
+	}
+	return v
+}
+
+// signExt24 sign-extends a value from 24 bits to int64.
+func signExt24(v int64) int64 {
+	if (v>>23)&1 == 1 {
+		return v | (-1 << 24)
 	}
 	return v
 }
@@ -64,9 +80,9 @@ func formatIE(s string) string {
 
 func formatMII(s string) string {
 	m1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	i1, _ := strconv.ParseUint(s[3:6], 16, 16)
-	i2, _ := strconv.ParseUint(s[6:12], 16, 32)
-	return fmt.Sprintf("%d,%d,%d", m1, signExt32(i1), signExt32(i2))
+	i1, _ := strconv.ParseInt(s[3:6], 16, 16)
+	i2, _ := strconv.ParseInt(s[6:12], 16, 32)
+	return fmt.Sprintf("%d,%d,%d", m1, signExt12(i1), signExt24(i2))
 }
 
 func formatRI1(s string) string {
@@ -107,7 +123,7 @@ func formatRIL2(s string) string {
 
 func formatRIL3(s string) string {
 	r1, _ := strconv.ParseUint(s[2:3], 16, 8)
-	raw, _ := strconv.ParseUint(s[4:12], 16, 32)
+	raw, _ := strconv.ParseUint(s[4:12], 16, 64)
 	return fmt.Sprintf("R%d,%d", r1, signExt32(raw))
 }
 
@@ -122,6 +138,20 @@ func formatRIE(s string) string {
 	r3, _ := strconv.ParseUint(s[3:4], 16, 8)
 	raw, _ := strconv.ParseInt(s[4:8], 16, 64)
 	return fmt.Sprintf("R%d,R%d,%d", r1, r3, signExt16(raw))
+}
+
+func formatRIEa(s string) string {
+	r1, _ := strconv.ParseUint(s[2:3], 16, 8)
+	raw, _ := strconv.ParseInt(s[4:8], 16, 64)
+	m3, _ := strconv.ParseUint(s[8:9], 16, 8)
+	return fmt.Sprintf("R%d,%d,%d", r1, signExt16(raw), m3)
+}
+
+func formatRIEaU(s string) string {
+	r1, _ := strconv.ParseUint(s[2:3], 16, 8)
+	i2, _ := strconv.ParseUint(s[4:8], 16, 16)
+	m3, _ := strconv.ParseUint(s[8:9], 16, 8)
+	return fmt.Sprintf("R%d,%d,%d", r1, i2, m3)
 }
 
 func formatRIEb(s string) string {
@@ -278,7 +308,7 @@ func formatRRS(s string) string {
 	r1, _ := strconv.ParseUint(s[2:3], 16, 8)
 	r2, _ := strconv.ParseUint(s[3:4], 16, 8)
 	b4, _ := strconv.ParseUint(s[4:5], 16, 8)
-	d4, _ := strconv.ParseUint(s[5:8], 16, 8)
+	d4, _ := strconv.ParseUint(s[5:8], 16, 16)
 	m3, _ := strconv.ParseUint(s[8:9], 16, 8)
 	return fmt.Sprintf("R%d,R%d,%d,%d(R%d)", r1, r2, m3, d4, b4)
 }
@@ -422,7 +452,7 @@ func formatSMI(s string) string {
 	m1, _ := strconv.ParseUint(s[2:3], 16, 8)
 	b3, _ := strconv.ParseUint(s[4:5], 16, 8)
 	d3, _ := strconv.ParseUint(s[5:8], 16, 16)
-	i2, _ := strconv.ParseInt(s[8:12], 16, 16)
+	i2, _ := strconv.ParseInt(s[8:12], 16, 64)
 	return fmt.Sprintf("%d,%d,%d(R%d)", m1, signExt16(i2), d3, b3)
 }
 
@@ -873,7 +903,6 @@ var itable = map[int]inst{
 	0x6f00: {"SW    ", formatRX1},
 	0x7000: {"STE   ", formatRX1},
 	0x7100: {"MS    ", formatRX1},
-	0x7700: {"PBL   ", formatRX1},
 	0x7800: {"LE    ", formatRX1},
 	0x7900: {"CE    ", formatRX1},
 	0x7a00: {"AE    ", formatRX1},
@@ -1385,7 +1414,7 @@ var itable = map[int]inst{
 	0xbe00: {"STCM  ", formatRS2},
 	0xbf00: {"ICM   ", formatRS2},
 	0xc000: {"LARL  ", formatRIL3},
-	0xc010: {"LGFI  ", formatRIL1},
+	0xc010: {"LGFI  ", formatRIL3},
 	0xc040: {"BRCL  ", formatRIL4},
 	0xc050: {"BRASL ", formatRIL3},
 	0xc060: {"XIHF  ", formatRIL1},
@@ -1398,16 +1427,16 @@ var itable = map[int]inst{
 	0xc0d0: {"OILF  ", formatRIL1},
 	0xc0e0: {"LLIHF ", formatRIL1},
 	0xc0f0: {"LLILF ", formatRIL1},
-	0xc200: {"MSGFI ", formatRIL1},
-	0xc210: {"MSFI  ", formatRIL1},
+	0xc200: {"MSGFI ", formatRIL3},
+	0xc210: {"MSFI  ", formatRIL3},
 	0xc240: {"SLGFI ", formatRIL1},
 	0xc250: {"SLFI  ", formatRIL1},
-	0xc280: {"AGFI  ", formatRIL1},
-	0xc290: {"AFI   ", formatRIL1},
+	0xc280: {"AGFI  ", formatRIL3},
+	0xc290: {"AFI   ", formatRIL3},
 	0xc2a0: {"ALGFI ", formatRIL1},
 	0xc2b0: {"ALFI  ", formatRIL1},
-	0xc2c0: {"CGFI  ", formatRIL1},
-	0xc2d0: {"CFI   ", formatRIL1},
+	0xc2c0: {"CGFI  ", formatRIL3},
+	0xc2d0: {"CFI   ", formatRIL3},
 	0xc2e0: {"CLGFI ", formatRIL1},
 	0xc2f0: {"CLFI  ", formatRIL1},
 	0xc420: {"LLHRL ", formatRIL3},
@@ -1852,8 +1881,8 @@ var itable = map[int]inst{
 	0xeb71: {"LPSWEY ", formatSIY},
 	0xeb7a: {"AGSI  ", formatSIY},
 	0xeb7e: {"ALGSI ", formatSIY},
-	0xeb80: {"ICMH  ", formatRSY1},
-	0xeb81: {"ICMY  ", formatRSY1},
+	0xeb80: {"ICMH  ", formatRSY2},
+	0xeb81: {"ICMY  ", formatRSY2},
 	0xeb8e: {"MVCLU ", formatRSY1},
 	0xeb8f: {"CLCLU ", formatRSY1},
 	0xeb90: {"STMY  ", formatRSY1},
@@ -1896,10 +1925,10 @@ var itable = map[int]inst{
 	0xec5d: {"RISBHG ", formatRIEf},
 	0xec64: {"CGRJ  ", formatRIEb},
 	0xec65: {"CLGRJ ", formatRIEb},
-	0xec70: {"CGIT  ", formatRIE},
-	0xec71: {"CLGIT ", formatRIE},
-	0xec72: {"CIT   ", formatRIE},
-	0xec73: {"CLFIT ", formatRIE},
+	0xec70: {"CGIT  ", formatRIEa},
+	0xec71: {"CLGIT ", formatRIEaU},
+	0xec72: {"CIT   ", formatRIEa},
+	0xec73: {"CLFIT ", formatRIEaU},
 	0xec76: {"CRJ   ", formatRIEb},
 	0xec77: {"CLRJ  ", formatRIEb},
 	0xec7c: {"CGIJ  ", formatRIEc},
