@@ -28,7 +28,7 @@ go get github.com/philippeleite/zdisasm
 zdisasm <hex-instruction>
 ```
 
-The hex string must have 2, 4, or 6 hex digits (1, 2, or 3 halfwords), representing a valid z/Architecture instruction.
+The hex string must have 4, 8, or 12 hex digits (1, 2, or 3 halfwords), representing a valid z/Architecture instruction.
 
 ### Examples
 
