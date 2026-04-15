@@ -66,7 +66,7 @@ func formatMII(s string) string {
 	m1, _ := strconv.ParseUint(s[2:3], 16, 8)
 	i1, _ := strconv.ParseUint(s[3:6], 16, 16)
 	i2, _ := strconv.ParseUint(s[6:12], 16, 32)
-	return fmt.Sprintf("%d,%d,%d", m1, i1, i2)
+	return fmt.Sprintf("%d,%d,%d", m1, signExt32(i1), signExt32(i2))
 }
 
 func formatRI1(s string) string {
@@ -212,6 +212,14 @@ func formatRRF2(s string) string {
 	r1, _ := strconv.ParseUint(s[6:7], 16, 8)
 	r2, _ := strconv.ParseUint(s[7:8], 16, 8)
 	return fmt.Sprintf("R%d,%d,R%d", r1, m3, r2)
+}
+
+func formatRRFa(s string) string {
+	r3, _ := strconv.ParseUint(s[4:5], 16, 8)
+	m4, _ := strconv.ParseUint(s[5:6], 16, 8)
+	r1, _ := strconv.ParseUint(s[6:7], 16, 8)
+	r2, _ := strconv.ParseUint(s[7:8], 16, 8)
+	return fmt.Sprintf("R%d,R%d,R%d,%d", r1, r2, r3, m4)
 }
 
 func formatRRF3(s string) string {
@@ -414,8 +422,8 @@ func formatSMI(s string) string {
 	m1, _ := strconv.ParseUint(s[2:3], 16, 8)
 	b3, _ := strconv.ParseUint(s[4:5], 16, 8)
 	d3, _ := strconv.ParseUint(s[5:8], 16, 16)
-	i2, _ := strconv.ParseUint(s[8:12], 16, 16)
-	return fmt.Sprintf("%d,%d,%d(R%d)", m1, i2, d3, b3)
+	i2, _ := strconv.ParseInt(s[8:12], 16, 16)
+	return fmt.Sprintf("%d,%d,%d(R%d)", m1, signExt16(i2), d3, b3)
 }
 
 func formatSS1(s string) string {
@@ -958,7 +966,7 @@ var itable = map[int]inst{
 	0xb218: {"PC    ", formatS},
 	0xb219: {"SAC   ", formatS},
 	0xb21a: {"CFC   ", formatS},
-	0xb221: {"IPTE  ", formatRRE1},
+	0xb221: {"IPTE  ", formatRRFa},
 	0xb222: {"IPM   ", formatRRE2},
 	0xb223: {"IVSK  ", formatRRE1},
 	0xb224: {"IAC   ", formatRRE2},
@@ -968,31 +976,31 @@ var itable = map[int]inst{
 	0xb228: {"PT    ", formatRRE1},
 	0xb229: {"ISKE  ", formatRRE1},
 	0xb22a: {"RRBE  ", formatRRE1},
-	0xb22b: {"SSKE  ", formatRRE1},
+	0xb22b: {"SSKE  ", formatRRF4},
 	0xb22c: {"TB    ", formatRRE1},
 	0xb22d: {"DXR   ", formatRRE1},
 	0xb22e: {"PGIN  ", formatRRE1},
 	0xb22f: {"PGOUT ", formatRRE1},
-	0xb230: {"CSCH  ", formatS},
-	0xb231: {"HSCH  ", formatS},
+	0xb230: {"CSCH  ", formatE},
+	0xb231: {"HSCH  ", formatE},
 	0xb232: {"MSCH  ", formatS},
 	0xb233: {"SSCH  ", formatS},
 	0xb234: {"STSCH ", formatS},
 	0xb235: {"TSCH  ", formatS},
 	0xb236: {"TPI   ", formatS},
-	0xb237: {"SAL   ", formatS},
-	0xb238: {"RSCH  ", formatS},
+	0xb237: {"SAL   ", formatE},
+	0xb238: {"RSCH  ", formatE},
 	0xb239: {"STCRW ", formatS},
 	0xb23a: {"STPCS ", formatS},
-	0xb23b: {"RCHP  ", formatS},
-	0xb23c: {"SCHM  ", formatS},
+	0xb23b: {"RCHP  ", formatE},
+	0xb23c: {"SCHM  ", formatE},
 	0xb240: {"BAKR  ", formatRRE1},
 	0xb241: {"CKSM  ", formatRRE1},
 	0xb244: {"SQDR  ", formatRRE1},
 	0xb245: {"SQER  ", formatRRE1},
 	0xb246: {"STURA ", formatRRE1},
 	0xb247: {"MSTA  ", formatRRE2},
-	0xb248: {"PALB  ", formatRRE1},
+	0xb248: {"PALB  ", formatE},
 	0xb249: {"EREG  ", formatRRE1},
 	0xb24a: {"ESTA  ", formatRRE1},
 	0xb24b: {"LURA  ", formatRRE1},
@@ -1010,7 +1018,7 @@ var itable = map[int]inst{
 	0xb25d: {"CLST  ", formatRRE1},
 	0xb25e: {"SRST  ", formatRRE1},
 	0xb263: {"CMPSC ", formatRRE1},
-	0xb276: {"XSCH  ", formatS},
+	0xb276: {"XSCH  ", formatE},
 	0xb277: {"RP    ", formatS},
 	0xb278: {"STCKE ", formatS},
 	0xb279: {"SACF  ", formatS},
@@ -1031,7 +1039,7 @@ var itable = map[int]inst{
 	0xb2bd: {"LFAS  ", formatS},
 	0xb2e8: {"PPA   ", formatRRF4},
 	0xb2ec: {"ETND  ", formatRRE2},
-	0xb2f8: {"TEND  ", formatS},
+	0xb2f8: {"TEND  ", formatE},
 	0xb2fa: {"NIAI  ", formatIE},
 	0xb2fc: {"TABORT ", formatS},
 	0xb2ff: {"TRAP4 ", formatS},
@@ -1257,10 +1265,10 @@ var itable = map[int]inst{
 	0xb938: {"SORTL ", formatRRE1},
 	0xb939: {"DFLTCC ", formatRRF7},
 	0xb93a: {"KDSA  ", formatRRE1},
-	0xb93b: {"NNPA  ", formatRRE1},
+	0xb93b: {"NNPA  ", formatE},
 	0xb93c: {"PPNO  ", formatRRE1},
-	0xb93e: {"KIMD  ", formatRRE1},
-	0xb93f: {"KLMD  ", formatRRE1},
+	0xb93e: {"KIMD  ", formatRRF4},
+	0xb93f: {"KLMD  ", formatRRF4},
 	0xb941: {"CFDTR ", formatRRF6},
 	0xb942: {"CLGDTR ", formatRRF6},
 	0xb943: {"CLFDTR ", formatRRF6},
@@ -1376,7 +1384,7 @@ var itable = map[int]inst{
 	0xbd00: {"CLM   ", formatRS2},
 	0xbe00: {"STCM  ", formatRS2},
 	0xbf00: {"ICM   ", formatRS2},
-	0xc000: {"LARL  ", formatRIL1},
+	0xc000: {"LARL  ", formatRIL3},
 	0xc010: {"LGFI  ", formatRIL1},
 	0xc040: {"BRCL  ", formatRIL4},
 	0xc050: {"BRASL ", formatRIL3},
@@ -1402,30 +1410,30 @@ var itable = map[int]inst{
 	0xc2d0: {"CFI   ", formatRIL1},
 	0xc2e0: {"CLGFI ", formatRIL1},
 	0xc2f0: {"CLFI  ", formatRIL1},
-	0xc420: {"LLHRL ", formatRIL1},
-	0xc440: {"LGHRL ", formatRIL1},
-	0xc450: {"LHRL  ", formatRIL1},
-	0xc460: {"LLGHRL ", formatRIL1},
-	0xc470: {"STHRL ", formatRIL1},
-	0xc480: {"LGRL  ", formatRIL1},
-	0xc4b0: {"STGRL ", formatRIL1},
-	0xc4c0: {"LGFRL ", formatRIL1},
-	0xc4d0: {"LRL   ", formatRIL1},
-	0xc4e0: {"LLGFRL ", formatRIL1},
-	0xc4f0: {"STRL  ", formatRIL1},
+	0xc420: {"LLHRL ", formatRIL3},
+	0xc440: {"LGHRL ", formatRIL3},
+	0xc450: {"LHRL  ", formatRIL3},
+	0xc460: {"LLGHRL ", formatRIL3},
+	0xc470: {"STHRL ", formatRIL3},
+	0xc480: {"LGRL  ", formatRIL3},
+	0xc4b0: {"STGRL ", formatRIL3},
+	0xc4c0: {"LGFRL ", formatRIL3},
+	0xc4d0: {"LRL   ", formatRIL3},
+	0xc4e0: {"LLGFRL ", formatRIL3},
+	0xc4f0: {"STRL  ", formatRIL3},
 	0xc500: {"BPRP  ", formatMII},
-	0xc600: {"EXRL  ", formatRIL1},
-	0xc620: {"PFDRL ", formatRIL2},
-	0xc640: {"CGHRL ", formatRIL1},
-	0xc650: {"CHRL  ", formatRIL1},
-	0xc660: {"CLGHRL ", formatRIL1},
-	0xc670: {"CLHRL ", formatRIL1},
-	0xc680: {"CGRL  ", formatRIL1},
-	0xc6a0: {"CLGRL ", formatRIL1},
-	0xc6c0: {"CGFRL ", formatRIL1},
-	0xc6d0: {"CRL   ", formatRIL1},
-	0xc6e0: {"CLGFRL ", formatRIL1},
-	0xc6f0: {"CLRL  ", formatRIL1},
+	0xc600: {"EXRL  ", formatRIL3},
+	0xc620: {"PFDRL ", formatRIL4},
+	0xc640: {"CGHRL ", formatRIL3},
+	0xc650: {"CHRL  ", formatRIL3},
+	0xc660: {"CLGHRL ", formatRIL3},
+	0xc670: {"CLHRL ", formatRIL3},
+	0xc680: {"CGRL  ", formatRIL3},
+	0xc6a0: {"CLGRL ", formatRIL3},
+	0xc6c0: {"CGFRL ", formatRIL3},
+	0xc6d0: {"CRL   ", formatRIL3},
+	0xc6e0: {"CLGFRL ", formatRIL3},
+	0xc6f0: {"CLRL  ", formatRIL3},
 	0xc700: {"BPP   ", formatSMI},
 	0xc800: {"MVCOS ", formatSSF},
 	0xc810: {"ECTG  ", formatSSF},
@@ -1435,7 +1443,7 @@ var itable = map[int]inst{
 	0xc860: {"CAL   ", formatSSG},
 	0xc870: {"CALG  ", formatSSG},
 	0xc8f0: {"CALGF ", formatSSG},
-	0xcc60: {"BRCTH ", formatRIL1},
+	0xcc60: {"BRCTH ", formatRIL3},
 	0xcc80: {"AIH   ", formatRIL1},
 	0xcca0: {"ALSIH ", formatRIL1},
 	0xccb0: {"ALSIHN ", formatRIL1},
