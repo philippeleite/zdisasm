@@ -1,14 +1,32 @@
 # zdisasm
 
-Disassembler for IBM z/Architecture (s390x) machine instructions, written in Go.
+A small, dependency-free disassembler for IBM z/Architecture (s390x / mainframe) machine instructions, written in Go.
 
-Takes a hexadecimal string representing a z/Architecture instruction and decodes it into its mnemonic and operands.
+Give it the hex of one instruction — for example from a dump, a trace, or a listing — and it prints the assembler mnemonic and operands in HLASM style:
+
+```sh
+$ zdisasm 4110F010
+LA    R1,16(R0,R15)
+```
+
+Highlights:
+
+- Covers about 1,200 opcodes, including the vector facility instructions.
+- Handles every instruction length: 2, 4, or 6 bytes.
+- Works as a command-line tool or as a Go library (`zdisasm.Disasm`).
+- Uses only the Go standard library.
 
 ## Installation
 
 ### CLI
 
-Build from source:
+Download a prebuilt binary for Linux, Windows, or macOS from the [Releases](https://github.com/philippeleite/zdisasm/releases) page, or install with Go:
+
+```sh
+go install github.com/philippeleite/zdisasm/cmd/zdisasm@latest
+```
+
+Or build from source:
 
 ```sh
 git clone https://github.com/philippeleite/zdisasm.git
