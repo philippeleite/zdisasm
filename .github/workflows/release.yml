@@ -1,0 +1,115 @@
+name: "tagged-release"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    name: "Build ${{ matrix.asset }}"
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            asset: zdisasm-x86_64-linux-gnu
+            binary: zdisasm
+          - os: windows-latest
+            asset: zdisasm-x86_64-windows
+            binary: zdisasm.exe
+          - os: macos-latest
+            asset: zdisasm-aarch64-macos
+            binary: zdisasm
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+
+      - name: "Setup Go"
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: "Test"
+        run: |
+          go vet ./...
+          go test ./...
+
+      - name: "Build binary"
+        run: |
+          go build -trimpath -ldflags "-s -w" -o "${{ matrix.binary }}" ./cmd/zdisasm
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            7z a "${{ matrix.asset }}.zip" "${{ matrix.binary }}"
+          else
+            zip -j "${{ matrix.asset }}.zip" "${{ matrix.binary }}"
+          fi
+
+      - name: "Upload artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: ${{ matrix.asset }}.zip
+
+  release:
+    name: "Tagged Release"
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history and tags, for the release notes
+
+      - name: "Download artifacts"
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: "Write release notes"
+        run: |
+          tag="$GITHUB_REF_NAME"
+          # actions/checkout replaces the triggering tag with a lightweight one; refetch the annotated tag.
+          git fetch --force --tags origin
+          prev=$(git describe --tags --abbrev=0 "$tag^" 2>/dev/null || true)
+          {
+            # An annotated tag's message, if any, opens the notes.
+            if [ "$(git cat-file -t "$tag")" = "tag" ]; then
+              git tag -l --format='%(contents)' "$tag"
+              echo
+            fi
+            if [ -n "$prev" ]; then
+              echo "## Changes since $prev"
+              range="$prev..$tag"
+            else
+              echo "## Changes"
+              range="$tag"
+            fi
+            echo
+            git log --no-merges --reverse --pretty='- %s' "$range"
+            echo
+            if [ -n "$prev" ]; then
+              echo "**Full Changelog**: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/compare/$prev...$tag"
+            else
+              echo "**Full Changelog**: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commits/$tag"
+            fi
+          } > release-notes.md
+          cat release-notes.md
+
+      - name: "Create release"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # A re-run updates the existing release instead of failing.
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" --notes-file release-notes.md
+            gh release upload "$GITHUB_REF_NAME" *.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" *.zip --title "$GITHUB_REF_NAME" --notes-file release-notes.md
+          fi
