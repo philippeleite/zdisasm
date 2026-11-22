@@ -3,7 +3,7 @@ package zdisasm_test
 import (
 	"testing"
 
-	"zdisasm"
+	"github.com/philippeleite/zdisasm"
 )
 
 func TestDisasm(t *testing.T) {
@@ -23,6 +23,33 @@ func TestDisasm(t *testing.T) {
 		{name: "BRASL", input: "C0E5FFFFFFEC", want: "BRASL R14,-20"},
 		// Format RXY (20-bit displacement): E3=op1, 1=R1, F=X2(R15), 1=B2(R1), 008=DL2, 00=DH2, 04=op2
 		{name: "LG", input: "E31F10080004", want: "LG    R1,8(R15,R1)"},
+		// Bug #1: CGIT (RIE-a) must show R1,I2,M3 (not R1,R3,RI2)
+		{name: "CGIT", input: "EC50FFFB8070", want: "CGIT  R5,-5,8"},
+		// Bug #1: CLGIT (RIE-a unsigned) must show R1,I2,M3
+		{name: "CLGIT", input: "EC50000A8071", want: "CLGIT R5,10,8"},
+		// Bug #1: CIT (RIE-a signed)
+		{name: "CIT", input: "EC30FFEC4072", want: "CIT   R3,-20,4"},
+		// Bug #1: CLFIT (RIE-a unsigned)
+		{name: "CLFIT", input: "EC3000144073", want: "CLFIT R3,20,4"},
+		// Bug #2: formatMII sign extension for BPRP (12-bit and 24-bit)
+		{name: "BPRP-neg", input: "C57FFE800020", want: "BPRP  7,-2,-8388576"},
+		{name: "BPRP-pos", input: "C50002000010", want: "BPRP  0,2,16"},
+		// Bug #3: formatRRS displacement > 255
+		{name: "CRB", input: "ECF12FFF60F6", want: "CRB   R15,R1,6,4095(R2)"},
+		// Bug #4: formatVRS reads V1 from correct position
+		{name: "VLRLR", input: "E62310000037", want: "VLRLR V2,R3,0(R1)"},
+		// Bug #5: formatSMI with large RI2 for BPP
+		{name: "BPP", input: "C7F01000FFEC", want: "BPP   15,-20,0(R1)"},
+		// Error: odd number of hex digits
+		{name: "odd-length", input: "EB1F200000080", wantErr: true},
+		// Bug #7: PBL opcode 77 is invalid
+		{name: "PBL-invalid", input: "77001000", wantErr: true},
+		// Bug #8: LGFI shows signed immediate
+		{name: "LGFI", input: "C011FFFFFFFE", want: "LGFI  R1,-2"},
+		// Bug #8: AFI shows signed immediate
+		{name: "AFI", input: "C299FFFFFFFE", want: "AFI   R9,-2"},
+		// Bug #6: ICMH with RSY2 format (mask, not register)
+		{name: "ICMH", input: "EB1F20000080", want: "ICMH  R1,15,0(R2)"},
 		// Error: non-hex input
 		{name: "non-hex", input: "ZZZZ", wantErr: true},
 		// Error: wrong length for opcode class

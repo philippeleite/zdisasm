@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"zdisasm"
+	"github.com/philippeleite/zdisasm"
 )
 
 func main() {
