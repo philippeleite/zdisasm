@@ -36,8 +36,13 @@ func TestDisasm(t *testing.T) {
 		{name: "BPRP-pos", input: "C50002000010", want: "BPRP  0,2,16"},
 		// Bug #3: formatRRS displacement > 255
 		{name: "CRB", input: "ECF12FFF60F6", want: "CRB   R15,R1,6,4095(R2)"},
-		// Bug #4: formatVRS reads V1 from correct position
-		{name: "VLRLR", input: "E62310000037", want: "VLRLR V2,R3,0(R1)"},
+		// Bug #4: formatVRS (VRS-d) reads V1 from bits 32-35
+		{name: "VLRLR", input: "E60310002037", want: "VLRLR V2,R3,0(R1)"},
+		{name: "VLRLR-rxb", input: "E60310002137", want: "VLRLR V18,R3,0(R1)"},
+		// RXB extends vector register fields to V16-V31
+		{name: "VLR-rxb0", input: "E71200000856", want: "VLR   V17,V2,0,0"},
+		{name: "VLR-rxb1", input: "E71200000456", want: "VLR   V1,V18,0,0"},
+		{name: "VLR-rxb01", input: "E7FF00000C56", want: "VLR   V31,V31,0,0"},
 		// Bug #5: formatSMI with large RI2 for BPP
 		{name: "BPP", input: "C7F01000FFEC", want: "BPP   15,-20,0(R1)"},
 		// Error: odd number of hex digits
